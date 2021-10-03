@@ -78,7 +78,3 @@ function rebuild(){
 	})).right();
 	
 }
-
-Events.on(GameOverEvent, event => {
-	print("获胜");
-});
