@@ -1,10 +1,9 @@
 {
 	"name": "items",
 	"displayName": "CoreItemsDisplay",
-	"author": "ABC",
-	"description": "需要与[#00aaff]DeltaNedas/ui-lib[].配合使用\n禁止外传！！！",
-	"version": "2.3.3",
-	"dependencies": ["ui-lib"],
+	"author": "miner",
+	"description": "minder自用版",
+	"version": "1.0",
 	"hidden": true,
 	"minGameVersion": 105
 }
