@@ -41,7 +41,7 @@ Events.on(EventType.ClientLoadEvent, cons(e => {
 }));
 
 function rebuild(){
-	coreItems.build();
+	coreItems.rebuild();
 	players.build();
 	skipWave.rebuild();
 	schematics.rebuild();

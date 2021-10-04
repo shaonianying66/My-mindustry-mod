@@ -1,15 +1,7 @@
 const vars = require("vars");
 
-var main = new Table(), table = new Table();
+var table = new Table();
 var timer = new Interval();
-
-function build(){
-	main.clear();
-	main.add(table);
-	main.update(() => {
-		if(timer.get(20)) rebuild();
-	});
-}
 
 function rebuild(){
 	table.clear();
@@ -27,19 +19,26 @@ function rebuild(){
 		pane.row();
 	
 		pane.table(cons(t => {
-			vars.teams.each(team => {
-				if(Groups.unit.count(u => u.type.isCounted && u.team == team) <= 0) return;
-				
-				t.label(() => "[#" + team.color + "]" + team.localized()).padRight(3).minWidth(16).left().get().setFontScale(vars.fontScale + 0.15);
-				
-				Vars.content.units().each(unit => {
-					if(!unit.isCounted || !vars.countUnit(unit, team)) return
-					t.image(unit.uiIcon).size(vars.imageSize);
-					t.label(() => vars.countUnit(unit, team) + "").left().padRight(3).minWidth(16).get().setFontScale(vars.fontScale);
-				});
-				
-				t.row();
-			});
+		  var runnable = run(() =>{
+		    t.clear();
+		    vars.teams.each(team => {
+		      if (Groups.unit.count(u => u.type.isCounted && u.team == team) <= 0) return;
+		    
+		      t.label(() => "[#" + team.color + "]" + team.localized()).padRight(3).minWidth(16).left().get().setFontScale(vars.fontScale + 0.15);
+		    
+		      Vars.content.units().each(unit => {
+		        if (!unit.isCounted || !vars.countUnit(unit, team)) return
+		        t.image(unit.uiIcon).size(vars.imageSize);
+		        t.label(() => vars.countUnit(unit, team) + "").left().padRight(3).minWidth(16).get().setFontScale(vars.fontScale);
+		      });
+		      
+		      t.row();
+		    });
+		  })
+		  
+		  t.update(() => {
+		    if(timer.get(20)) runnable.run();
+		  })
 		}));
 	});
 	
@@ -78,6 +77,6 @@ function rebuild(){
 }
 
 module.exports = {
-	table: main,
-	build: build,
+	table: table,
+	rebuild: rebuild,
 }
