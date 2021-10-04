@@ -6,46 +6,53 @@ var timer = new Interval();
 function rebuild(){
 	table.clear();
 	table.background(Styles.black6);
+  
+  /* add info */
+	table.table(cons(t => {
+		t.image(Blocks.coreNucleus.uiIcon).size(vars.imageSize).growX();
+	  t.label(() => Vars.player.team().cores().size + "").padRight(3).left().get().setFontScale(vars.fontScale);
+	  t.image(UnitTypes.mono.uiIcon).size(vars.imageSize).growX();
+  	t.label(() => vars.countMiner(Vars.player.team()) + "").padRight(3).left().get().setFontScale(vars.fontScale);
 
-	table.pane(Styles.nonePane, pane => {
-		pane.table(cons(t => {
-			vars.addInfo(Vars.player.team(), t);
-			t.image(UnitTypes.gamma.uiIcon).size(vars.imageSize).padRight(3);
-			t.label(() => "[#" + Vars.player.team().color + "]" + vars.countPlayer(Vars.player.team()) + "[white]" + "/"+ "[accent]" + Groups.player.size()).padRight(3).minWidth(16).left().get().setFontScale(vars.fontScale);
-			t.image(UnitTypes.gamma.uiIcon).size(vars.imageSize).padRight(3);
-			t.label(() => Core.settings.getString("uuid", "").substring(0, 3)).padRight(4).left().get().setFontScale(vars.fontScale);
-		}));
-		
-		pane.row();
+		t.image(UnitTypes.gamma.uiIcon).size(vars.imageSize).growX();
+		t.label(() => "[#" + Vars.player.team().color + "]" + vars.countPlayer(Vars.player.team()) + "[white]" + "/"+ "[accent]" + Groups.player.size()).left().get().setFontScale(vars.fontScale);
+		t.image(UnitTypes.gamma.uiIcon).size(vars.imageSize).growX();
+		t.label(() => Core.settings.getString("uuid", "").substring(0, 3)).left().get().setFontScale(vars.fontScale);
+	})).fillX();
 	
-		pane.table(cons(t => {
-		  var runnable = run(() =>{
-		    t.clear();
-		    vars.teams.each(team => {
-		      if (Groups.unit.count(u => u.type.isCounted && u.team == team) <= 0) return;
+	table.row();
+	table.image().height(3).color(Pal.gray).fillX().update(i => i.setColor(Vars.player.team().color));
+	table.row();
+
+  /* units */
+	table.pane(Styles.nonePane, t => {
+		var runnable = run(() => {
+		  t.clear();
+		  vars.teams.each(team => {
+		    if (Groups.unit.count(u => u.type.isCounted && u.team == team) <= 0) return;
+	
+		    t.label(() => "[#" + team.color + "]" + team.localized()).padRight(3).minWidth(16).left().get().setFontScale(vars.fontScale + 0.15);
 		    
-		      t.label(() => "[#" + team.color + "]" + team.localized()).padRight(3).minWidth(16).left().get().setFontScale(vars.fontScale + 0.15);
-		    
-		      Vars.content.units().each(unit => {
-		        if (!unit.isCounted || !vars.countUnit(unit, team)) return
-		        t.image(unit.uiIcon).size(vars.imageSize);
-		        t.label(() => vars.countUnit(unit, team) + "").left().padRight(3).minWidth(16).get().setFontScale(vars.fontScale);
-		      });
-		      
-		      t.row();
+		    Vars.content.units().each(unit => {
+		      if (!unit.isCounted || !vars.countUnit(unit, team)) return
+		      t.image(unit.uiIcon).size(vars.imageSize);
+		      t.label(() => vars.countUnit(unit, team) + "").left().padRight(3).minWidth(16).get().setFontScale(vars.fontScale);
 		    });
-		  })
+		      
+		    t.row();
+		  });
+		});
 		  
-		  t.update(() => {
-		    if(timer.get(20)) runnable.run();
-		  })
-		}));
+		t.update(() => {
+		  if(timer.get(20)) runnable.run();
+		})
 	});
 	
 	table.row();
 	table.image().height(3).color(Pal.gray).fillX().update(i => i.setColor(Vars.player.team().color));
 	table.row();
 	
+	/* useful buttons */
 	table.table(cons(buttons => {
 		buttons.button(Icon.hammerSmall, Styles.clearToggleTransi, () => {
 			if(Vars.player.isBuilder()){

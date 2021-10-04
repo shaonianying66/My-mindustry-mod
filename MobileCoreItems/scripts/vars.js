@@ -30,13 +30,6 @@ Events.run(WorldLoadEvent, () => {
 	otherItemUsed.clear();
 });
 
-function addInfo(team, table){
-	table.image(Blocks.coreNucleus.uiIcon).size(imageSize).padRight(3);
-	table.label(() => team.cores().size + "").padRight(3).minWidth(16).left().get().setFontScale(fontScale);
-	table.image(UnitTypes.mono.uiIcon).size(imageSize).padRight(3);
-	table.label(() => countMiner(team) + "").padRight(3).minWidth(16).left().get().setFontScale(fontScale);
-};
-
 function countUnit(unitType, team){
 	return team.data().countType(unitType);
 }
@@ -58,8 +51,8 @@ module.exports = {
 	otherItemUsed: otherItemUsed,
 	fontScale: fontScale,
 	imageSize: imageSize,
-	addInfo: addInfo,
 	countUnit: countUnit,
 	countPlayer: countPlayer,
+	countMiner: countMiner,
 	move: move,
 }
